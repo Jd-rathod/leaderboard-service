@@ -1,0 +1,73 @@
+# Help/Documentation
+HELP.md
+
+# Maven target directories
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Maven Wrapper
+!.mvn/wrapper/maven-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code
+.vscode/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Spring Tool Suite
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# Build outputs
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Logs
+*.log
+logs/
+log/
+
+# Environment/config files
+.env
+*.env
+
+# Write-Ahead Logs
+wal/
+
+# Docker artifacts
+*.pid
+*.tar
+docker-compose.override.yml
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Java compiled classes
+*.class
+
+# Coverage/test reports
+coverage/
+jacoco.exec
+test-output/
+hs_err_pid*
+
+# Local PostgreSQL volume mount
+pgdata/
