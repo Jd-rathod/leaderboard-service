@@ -15,6 +15,19 @@ A high-throughput, low-latency leaderboard service built with Java Spring Boot, 
 - ✅ Horizontal sharding support by `gameId`
 
 ---
+## 🏗 Architecture Overview
+
+### Components
+
+- **LeaderboardController** – REST API handler for ingesting scores and querying leaderboard data.
+- **ShardRouter** – Routes each gameId to a consistent in-memory `LeaderboardService` shard.
+- **GameLeaderboard** – In-memory structure holding scores and sliding-window logic with `TreeMap` and `PriorityQueue`.
+- **LeaderboardService** – Manages `GameLeaderboard`s for different window sizes, handles WAL persistence and DB writes.
+- **WALManager** – Appends all writes to WAL file asynchronously for durability and crash recovery.
+- **Kafka** – Used for async ingestion of scores (decouples producers and consumers).
+- **PostgreSQL** – Stores all score entries for analytical querying or historical backup.
+
+---
 
 ## 🧠 Data Structures
 
@@ -99,16 +112,6 @@ A high-throughput, low-latency leaderboard service built with Java Spring Boot, 
 
 ---
 
-## 📂 Project Structure
-
-- `LeaderboardService` – per-shard instance handling ingestion & queries
-- `GameLeaderboard` – in-memory structure for each game + window
-- `WALManager` – write-ahead log persistence
-- `ScoreKafkaProducer/Consumer` – async Kafka ingestion
-- `ShardRouter` – maps gameId → shard
-
----
-
 ## 🧪 Load Testing
 
 ```bash
@@ -127,6 +130,42 @@ docker-compose up --build
 ```
 
 Or run locally from IntelliJ if Kafka/Postgres are already running via Docker.
+
+---
+
+## ✅ Testing the API
+
+### 1. Submit a Score (Sync)
+
+```http
+POST /games/game123/scores?mode=sync
+{
+  "userId": "user1",
+  "score": 150
+}
+```
+
+### 2. Submit a Score (Async)
+
+```http
+POST /games/game123/scores?mode=async
+{
+  "userId": "user1",
+  "score": 150
+}
+```
+
+### 3. Get Top-K
+
+```http
+GET /games/game123/leaders?limit=10&window=24h
+```
+
+### 4. Get Rank/Percentile
+
+```http
+GET /games/game123/users/user1/rank?window=24h
+```
 
 ---
 
